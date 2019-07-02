@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 5000
 const TOKEN = process.env.TOKEN;
 const CHAT_IDS = (process.env.CHAT_IDS || '').split(',').map(Number)
 const OWNER = Number(process.env.OWNER);
+const TOTAL = 30;
 
 if (!OWNER) {
     console.error('Process runned withour OWNER env');
@@ -22,7 +23,7 @@ bot.onText(/\/kushot/, (msg) => {
     const from = msg.from.id;
 
     if (CHAT_IDS.indexOf(chatId) >= 0) {
-        const rando = (Math.random() * 19 >> 0)
+        const rando = (Math.random() * TOTAL >> 0)
         bot.sendPhoto(chatId, `./imgs/${rando}.jpg`);
     } else {
         if (from === OWNER) {
@@ -36,7 +37,7 @@ bot.onText(/\/kushot/, (msg) => {
 
 cron.schedule(process.env.CRON || '00 13 * * 1-5', () => {
     CHAT_IDS.forEach(chatId => {
-        const rando = (Math.random() * 19 >> 0)
+        const rando = (Math.random() * TOTAL >> 0)
         bot.sendPhoto(chatId, `./imgs/${rando}.jpg`);
     })
 }, {

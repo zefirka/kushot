@@ -3,6 +3,8 @@ const cron = require('node-cron')
 const PORT = process.env.PORT || 5000
 const TOKEN = process.env.TOKEN;
 const CHAT_IDS = (process.env.CHAT_IDS || '').split(',').map(Number)
+const OWNER = Number(process.env.OWNER);
+
 
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -14,12 +16,17 @@ bot.on("polling_error", (err) => console.log(err));
 
 bot.onText(/\/kushot/, (msg) => {
     const chatId = msg.chat.id;
+    const from = msg.from.id;
 
     if (CHAT_IDS.indexOf(chatId) >= 0) {
         const rando = (Math.random() * 19 >> 0)
         bot.sendPhoto(chatId, `./imgs/${rando}.jpg`);
     } else {
-        bot.sendMessage(chatId, 'Попроси @zeffirsky включить меня');
+        if (from === OWNER) {
+            bot.sendMessage(OWNER, chatId);
+        } else {
+            bot.sendMessage(chatId, 'Попроси @zeffirsky включить меня');
+        }
     }    
 });
 

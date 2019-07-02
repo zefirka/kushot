@@ -33,7 +33,8 @@ bot.onText(/\/kushot/, (msg) => {
     }    
 });
 
-cron.schedule(process.env.CRON || '55 00 * * 1-5', () => {
+
+cron.schedule(process.env.CRON || '00 13 * * 1-5', () => {
     CHAT_IDS.forEach(chatId => {
         const rando = (Math.random() * 19 >> 0)
         bot.sendPhoto(chatId, `./imgs/${rando}.jpg`);
@@ -42,6 +43,8 @@ cron.schedule(process.env.CRON || '55 00 * * 1-5', () => {
     scheduled: true,
     timezone: 'Europe/Moscow'
 })
+
+console.log('Cron started to run: ' + (process.env.CRON || '00 13 * * 1-5'));
 
 express().get('/', (req, res) => res.send('Alive')).listen(PORT, () => console.log(`Listening on ${PORT}`))
 

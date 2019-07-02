@@ -28,6 +28,7 @@ bot.onText(/\/kushot/, (msg) => {
     } else {
         if (from === OWNER) {
             bot.sendMessage(OWNER, chatId);
+            bot.sendMessage(chatId, 'теперь вы не забудете покушоть')
         } else {
             bot.sendMessage(chatId, 'Попроси @zeffirsky включить меня');
         }

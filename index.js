@@ -5,6 +5,9 @@ const TOKEN = process.env.TOKEN;
 const CHAT_IDS = (process.env.CHAT_IDS || '').split(',').map(Number)
 const OWNER = Number(process.env.OWNER);
 
+if (!OWNER) {
+    console.error('Process runned withour OWNER env');
+}
 
 const TelegramBot = require('node-telegram-bot-api');
 

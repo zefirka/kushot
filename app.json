@@ -1,0 +1,9 @@
+{
+    "name": "kushotbot",
+    "description": "kushotbot",
+    "repository": "",
+    "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+    "keywords": [""],
+    "image": "heroku/nodejs"
+  }
+  

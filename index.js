@@ -23,8 +23,10 @@ bot.onText(/\/kushot/, (msg) => {
     const from = msg.from.id;
 
     if (CHAT_IDS.indexOf(chatId) >= 0) {
-        const rando = (Math.random() * TOTAL >> 0)
-        bot.sendPhoto(chatId, `./imgs/${rando}.jpg`);
+        if (from === OWNER) {
+            const rando = (Math.random() * TOTAL >> 0)
+            bot.sendPhoto(chatId, `./imgs/${rando}.jpg`);
+        }
     } else {
         if (from === OWNER) {
             bot.sendMessage(OWNER, chatId);

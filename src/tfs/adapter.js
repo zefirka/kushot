@@ -1,20 +1,4 @@
-const {Pool} = require('pg');
-
-const config = require('@root/config');
-
-console.log('config.db', config.db);
-const pool = new Pool(config.db);
-
-const query = (q) => new Promise((resolve, reject) => {
-    pool.query(q, (err, res) => {
-        if (err) {
-            pool.end();
-            return reject(err);
-        }
-
-        resolve(res);
-    });
-});
+const {query} = require('@root/utils');
 
 module.exports = async() => {
     let {rows: data} = await query('SELECT * from kushot.files');

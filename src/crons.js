@@ -8,19 +8,18 @@ const {bot} = require('./bot');
 let task;
 
 function start(fs) {
-    task = cron.schedule(config.cronTab || '00 13 * * 1-5', async() => {
+    task = cron.schedule(config.cronTab || '01 19 * * 1-5', async() => {
         const chatIds = await chats.get();
-
-        chatIds.forEach(({id}) => {
-            const file = fs.getRandomFile();
-            bot.sendPhoto(id, file.content.file_id);
+        chatIds.forEach(async({id}) => {
+            const file = await fs.getRandomFile();
+            console.log(file);
+            console.log(id);
+            return bot.sendPhoto(id, file.content.data.file_id);
         });
     }, {
         scheduled: true,
         timezone: 'Europe/Moscow',
     });
-
-    console.log('Cron started to run: ' + (process.env.CRON || '00 13 * * 1-5'));
 }
 
 function restart(fs) {

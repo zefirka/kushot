@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
+const random = (items) => items[Math.floor(Math.random() * items.length)];
 
 module.exports = class Tafs {
     constructor(options) {
@@ -14,6 +15,11 @@ module.exports = class Tafs {
 
     list() {
         return this.fsAdapter.list();
+    }
+
+    async getRandomFile() {
+        const list = await this.fsAdapter.list();
+        return random(list);
     }
 
     get sendId() {
@@ -39,8 +45,8 @@ module.exports = class Tafs {
         return this.fsAdapter.set(fuid, {
             type: path.extname(filePath),
             data: {
-                id: fuid,
-                uid: fid,
+                file_id: fuid,
+                file_unique_id: fid,
                 link: link,
             },
         });
@@ -52,8 +58,8 @@ module.exports = class Tafs {
         return this.fsAdapter.set(file.file_unique_id, {
             type: path.extname(link),
             data: {
-                id: file.file_unique_id,
-                uid: file.file_id,
+                file_unique_id: file.file_unique_id,
+                file_id: file.file_id,
                 link: link,
             },
         });

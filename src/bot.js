@@ -34,8 +34,6 @@ const initBot = (incomingFs) => {
         if (isCommand(command)) {
             const commandRx = /\/(\w+)\s*(\((.+)\))?/g;
             const [, commandName, , args] = commandRx.exec(command);
-            console.log('commandName', commandName);
-            console.log('args', args);
             const handler = commands[commandName];
 
             if (handler) {
@@ -76,7 +74,7 @@ const onApprove = async(message, [fid, from]) => {
     const image = await fs.getFile(fid);
 
     if (image) {
-        if (image.type === 'tmp') {
+        if (image.content.type === 'tmp') {
             await fs.remove(image.content.file.file_unique_id);
             await fs.uploadByTgFile(image.content.file);
             return bot.sendMessage(from, 'Твою кортинку заопрувили!');
@@ -116,7 +114,8 @@ const onAll = async() => {
 };
 
 const onDeleteAll = async() => {
-    return await fs.clear();
+    await fs.clear();
+    bot.report('Готово');
 };
 
 const onAddChat = async(message, [chatId]) => {

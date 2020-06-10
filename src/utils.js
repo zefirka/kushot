@@ -12,3 +12,5 @@ module.exports.query = (q) => new Promise((resolve, reject) => {
         resolve(res);
     });
 });
+
+module.exports.random = (items) => items[Math.floor(Math.random() * items.length)];

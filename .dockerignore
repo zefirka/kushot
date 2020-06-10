@@ -1,5 +1,1 @@
-from node:12
-
-workdir /app
-
-copy .
+node_modules

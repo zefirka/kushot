@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
-const random = (items) => items[Math.floor(Math.random() * items.length)];
+const {random} = require('@root/utils');
 
 module.exports = class Tafs {
     constructor(options) {
@@ -37,16 +37,16 @@ module.exports = class Tafs {
             throw new Error('File not found');
         }
 
-        const result = await this.bot.sendDocument(this.sendId, filePath);
+        const result = await this.bot.sendPhoto(this.sendId, filePath);
 
-        const {file_id: fid, file_unique_id: fuid} = result.document;
+        const {file_id: fid, file_unique_id: fuid} = result.photo.pop();
         const link = await this.bot.getFileLink(fid);
 
         return this.fsAdapter.set(fuid, {
             type: path.extname(filePath),
             data: {
-                file_id: fuid,
-                file_unique_id: fid,
+                file_id: fid,
+                file_unique_id: fuid,
                 link: link,
             },
         });

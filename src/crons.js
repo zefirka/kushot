@@ -8,7 +8,7 @@ const {bot} = require('./bot');
 let task;
 
 function start(fs) {
-    task = cron.schedule(config.cronTab || '01 19 * * 1-5', async() => {
+    task = cron.schedule(config.cronTab || '00 13 * * 1-5', async() => {
         const chatIds = await chats.get();
         chatIds.forEach(async({id}) => {
             const file = await fs.getRandomFile();

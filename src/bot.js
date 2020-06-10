@@ -1,10 +1,22 @@
 const config = require('@config');
 
 const TelegramBot = require('node-telegram-bot-api');
+const Agent = require('socks5-https-client/lib/Agent');
+
 const chats = require('./chats');
 const EventEmitter = require('events');
 
-const bot = new TelegramBot(config.token, {polling: true});
+const bot = new TelegramBot(config.token, {
+    polling: true,
+    request: {
+        agentClass: Agent,
+        agentOptions: {
+            socksHost: config.socksHost,
+            socksPort: config.socksPort,
+        },
+    },
+});
+
 bot.owner = config.owner;
 bot.report = (msg) => bot.sendMessage(bot.owner, msg);
 
@@ -123,6 +135,12 @@ const onAddChat = async(message, [chatId]) => {
     emitter.emit('chats:change');
 };
 
+const random = async(message) => {
+    const file = await fs.getRandomFile();
+    console.log('file', file);
+    await bot.sendPhoto(bot.owner, file.content.data.file_id);
+};
+
 const onRemoveChat = async(message, [chatId]) => {
     chats.remove(chatId);
     emitter.emit('chats:change');
@@ -147,6 +165,7 @@ const commands = {
     'chats': withOwnerAuth(onShowChats),
     'chatId': withOwnerAuth(onShowChatId),
     'dangerously_delete_all_WARNING': withOwnerAuth(onDeleteAll),
+    'random': random,
 };
 
 module.exports.bot = bot;

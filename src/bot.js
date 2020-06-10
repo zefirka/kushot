@@ -24,6 +24,7 @@ const isCommand = (caption) => caption && caption.startsWith('/');
 const withOwnerAuth = (fn) => {
     return (message, ...args) => {
         if (message.from.id !== config.owner) {
+            bot.sendMessage(message.chat.id, 'ТЫ НЕ ПРОЙДЕШЬ!');
             return null;
         }
         return fn(message, ...args);
@@ -130,20 +131,27 @@ const onDeleteAll = async() => {
     bot.report('Готово');
 };
 
-const onAddChat = async(message, [chatId]) => {
-    chats.set(chatId);
+const onAddChat = async(message, [chatId, name]) => {
+    await chats.set(chatId, name);
     emitter.emit('chats:change');
+    bot.report('Готово');
+};
+
+const setCron = async(message, [cron]) => {
+    await chats.setCron(message.chat.id, cron);
+    emitter.emit('chats:change');
+    bot.sendMessage(message.chat.id, 'Готово');
 };
 
 const random = async(message) => {
     const file = await fs.getRandomFile();
-    console.log('file', file);
-    await bot.sendPhoto(bot.owner, file.content.data.file_id);
+    await bot.sendPhoto(message.chat.id || message.from.id, file.content.data.file_id);
 };
 
 const onRemoveChat = async(message, [chatId]) => {
-    chats.remove(chatId);
+    await chats.remove(chatId);
     emitter.emit('chats:change');
+    bot.report('Чат удален, все ок');
 };
 
 const onShowChats = async() => {
@@ -159,11 +167,12 @@ const commands = {
     'approve': withOwnerAuth(onApprove),
     'disapprove': withOwnerAuth(onDisapprove),
     'report': withOwnerAuth(onReport),
-    'all': withOwnerAuth(onAll),
+    'files': withOwnerAuth(onAll),
     'addChat': withOwnerAuth(onAddChat),
     'removeChat': withOwnerAuth(onRemoveChat),
     'chats': withOwnerAuth(onShowChats),
     'chatId': withOwnerAuth(onShowChatId),
+    'setCron': withOwnerAuth(setCron),
     'dangerously_delete_all_WARNING': withOwnerAuth(onDeleteAll),
     'random': random,
 };

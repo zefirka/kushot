@@ -6,6 +6,8 @@ const config = {
     token: process.env.BOT_TOKEN,
     owner:  Number(process.env.OWNER),
 
+    cronTab: process.env.CRON || '00 13 * * 1-5',
+
     db: {
         host: process.env.PG_HOST,
         port: process.env.PG_PORT || 5432,

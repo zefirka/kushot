@@ -2,32 +2,35 @@ const cron = require('node-cron');
 
 const config = require('@config');
 
-const chats = require('./chats');
+const chatsApi = require('./chats');
 const {bot} = require('./bot');
 
-let task;
+let tasks = [];
 
-function start(fs) {
-    task = cron.schedule(config.cronTab || '00 13 * * 1-5', async() => {
-        const chatIds = await chats.get();
-        chatIds.forEach(async({id}) => {
+async function start(fs) {
+    const chats = await chatsApi.get();
+
+    chats.forEach((chat) => {
+        const task = cron.schedule(chat.cron || config.cronTab, async() => {
             const file = await fs.getRandomFile();
-            console.log(file);
-            console.log(id);
-            return bot.sendPhoto(id, file.content.data.file_id);
+            return bot.sendPhoto(chat.id, file.content.data.file_id);
+        }, {
+            scheduled: true,
+            timezone: 'Europe/Moscow',
         });
-    }, {
-        scheduled: true,
-        timezone: 'Europe/Moscow',
+
+        console.log(`Setted cron for ${chat.id} at ${chat.cron || config.cronTab}`);
+
+        tasks.push(task);
     });
 }
 
-function restart(fs) {
-    if (task) {
-        task.stop();
+async function restart(fs) {
+    if (tasks.length) {
+        tasks.forEach((task) => task.stop());
     }
 
-    start(fs);
+    await start(fs);
 }
 
 module.exports = {start, restart};

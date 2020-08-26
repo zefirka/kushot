@@ -15,9 +15,6 @@ const config = {
         password: process.env.PG_PASSWORD,
         database: process.env.PG_DB,
     },
-
-    socksHost: process.env.SOCKS5_HOST,
-    socksPort: Number(process.env.SOCKS5_PORT),
 };
 
 module.exports = config;

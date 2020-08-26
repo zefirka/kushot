@@ -19,8 +19,7 @@
     "node-cron": "^2.0.3",
     "node-telegram-bot-api": "^0.30.0",
     "nodemon": "^2.0.1",
-    "pg": "^8.2.1",
-    "socks5-https-client": "^1.2.1"
+    "pg": "^8.2.1"
   },
   "husky": {
     "hooks": {

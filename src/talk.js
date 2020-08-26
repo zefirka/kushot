@@ -1,15 +1,24 @@
+require('module-alias/register');
 const fuzz = require('fuzzball');
 const {random} = require('./utils');
 
-/** __MODEL__:
-{
-    's1; s2; ...sn': {
-        '<ratio>': {
-            '<probability>': 'a1; a2; a3',
+const D = {
+    'да': {
+        '100': {
+            '0.5': 'пизда',
+        },
+    },
+    'хочу кушать; я хочу кушать; кушать хочу; хочу кушоть; я хочу кушоть; кушоть хочу;': {
+        '100': {
+            '0.82': 'хватит кушать',
+            '0.58': 'сколько можно кушоть',
+        },
+        '60': {
+            '0.38': 'хватит кушать',
+            '0.18': 'сколько можно кушоть',
         },
     },
 };
-*/
 
 module.exports = (text, dictionary) => {
     const dict = {};
@@ -28,16 +37,17 @@ module.exports = (text, dictionary) => {
         }).filter(Boolean);
 
         if (mapped.length) {
-            return mapped;
+            return [mapped[0]];
         }
     }).filter(Boolean).map((probs) => {
         return probs.map((prob) => {
             return Object.entries(prob).map(([thresholdProb, answer]) => {
                 if (Math.random() <= Number(thresholdProb)) {
-                    console.log('answer', answer);
                     return random(answer.split(';').map(e => e.trim()).filter(Boolean));
                 }
             }).filter(Boolean);
         }).filter(e => e.length);
     });
 };
+
+console.log(module.exports('хочу кушоть', D));

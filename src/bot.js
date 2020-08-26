@@ -1,20 +1,12 @@
 const config = require('@config');
 
 const TelegramBot = require('node-telegram-bot-api');
-const Agent = require('socks5-https-client/lib/Agent');
 
 const chats = require('./chats');
 const EventEmitter = require('events');
 
 const bot = new TelegramBot(config.token, {
     polling: true,
-    request: {
-        agentClass: Agent,
-        agentOptions: {
-            socksHost: config.socksHost,
-            socksPort: config.socksPort,
-        },
-    },
 });
 
 bot.owner = config.owner;

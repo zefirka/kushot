@@ -9,6 +9,7 @@ let tasks = [];
 
 async function start(fs) {
     const chats = await chatsApi.get();
+    console.log('chats', chats);
 
     chats.forEach((chat) => {
         const task = cron.schedule(chat.cron || config.cronTab, async() => {

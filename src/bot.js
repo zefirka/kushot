@@ -3,6 +3,8 @@ const config = require('@config');
 const TelegramBot = require('node-telegram-bot-api');
 
 const chats = require('./chats');
+const solomon = require('./solomon');
+
 const EventEmitter = require('events');
 
 const bot = new TelegramBot(config.token, {
@@ -31,8 +33,9 @@ const initBot = (incomingFs) => {
     fs = incomingFs;
     bot.on('polling_error', console.error);
 
-    bot.on('message', (message) => {
+    bot.on('message', async(message) => {
         console.log('message', message);
+
         const {caption, text} = message;
         const command = caption || text;
 
@@ -42,7 +45,13 @@ const initBot = (incomingFs) => {
             const handler = commands[commandName];
 
             if (handler) {
-                return handler(message, args ? args.split(',').map(e => e.trim()) : []);
+                const d = Date.now();
+                const data = await handler(message, args ? args.split(',').map(e => e.trim()) : []);
+                solomon.write({
+                    sensor: 'command.handler.handleTimeMs',
+                    command: commandName,
+                }, Date.now() - d, 'IGAUGE');
+                return data;
             }
         }
     });

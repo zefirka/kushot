@@ -6,3 +6,4 @@ npm-debug.log
 *.dev
 .DS_Store
 imgs
+key.json

@@ -1,19 +1,27 @@
 const cron = require('node-cron');
 
 const config = require('@config');
+const solomon = require('./solomon');
 
 const chatsApi = require('./chats');
 const {bot} = require('./bot');
 
 let tasks = [];
 
+let daysWithouJewishTricks = 0;
+
 async function start(fs) {
     const chats = await chatsApi.get();
-    console.log('chats', chats);
 
     chats.forEach((chat) => {
         const task = cron.schedule(chat.cron || config.cronTab, async() => {
             const file = await fs.getRandomFile();
+            daysWithouJewishTricks += 1;
+
+            solomon.write({
+                sensor: 'uptime.days',
+                chatId: chat.id,
+            }, daysWithouJewishTricks, 'COUNTER');
             return bot.sendPhoto(chat.id, file.content.data.file_id);
         }, {
             scheduled: true,
